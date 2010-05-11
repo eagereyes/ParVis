@@ -1,0 +1,21 @@
+7
+Name      String
+School string
+Quiz1		Real
+Quiz2		Real
+Homework1	Real
+Homework2	Real
+Final		Real
+#
+#  Here are the actual grades.
+John	St.Pauls 93	92	100	0       85
+Peter	St.Pauls 78	90	90	90	76
+Mary	Oxford 53	88	90	95	85
+Ann		Oxford 31	92	95	20	90
+Joseph	St.Pauls 78	90	90	98	99
+Ruth	London 53	90	100	20	99
+Peter	St.Pauls 75	83	90	82	73
+Liz 	Oxford 22	35	95	89	70
+Paul	London 81	77	90	97	89
+Andrea	London 83	88	95	93	95
+Gil 	London 85	84	85	50	83
