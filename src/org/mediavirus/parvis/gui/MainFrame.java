@@ -24,12 +24,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 package org.mediavirus.parvis.gui;
 
-import javax.swing.*;
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.IOException;
 
-import org.mediavirus.parvis.file.*;
-import org.mediavirus.parvis.model.*;
+import javax.swing.JFileChooser;
+import javax.swing.UIManager;
+
+import org.mediavirus.parvis.file.STFFile;
+import org.mediavirus.parvis.model.Brush;
 
 /**
  *
@@ -37,7 +39,9 @@ import org.mediavirus.parvis.model.*;
  */
 public class MainFrame extends javax.swing.JFrame implements ProgressListener, BrushListener {
 
-    /** Creates new form MainFrame */
+    private static final String INITIALFILENAME = "data/cars.stf";
+
+	/** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
         parallelDisplay.addProgressListener(this);
@@ -45,11 +49,11 @@ public class MainFrame extends javax.swing.JFrame implements ProgressListener, B
 
         BrushList brushList = new BrushList(parallelDisplay);
         brushList.setLocation(this.getX() + this.getWidth(), this.getY());
-        brushList.show();
+        brushList.setVisible(true);
         
         CorrelationFrame correlationFrame = new CorrelationFrame(parallelDisplay);
         correlationFrame.setLocation(this.getX() + this.getWidth(), this.getY() + brushList.getHeight());
-        correlationFrame.show();
+        correlationFrame.setVisible(true);
         
         this.setSize(800, 600);
         
@@ -313,7 +317,7 @@ public class MainFrame extends javax.swing.JFrame implements ProgressListener, B
         urlBar.add(datasourceLabel);
 
         urlField.setFont(new java.awt.Font("Dialog", 0, 10));
-        urlField.setText("file:///C:/data/uni/vis/datasets/cars.stf");
+        urlField.setText(INITIALFILENAME);
         urlField.setMargin(new java.awt.Insets(0, 0, 0, 5));
         urlField.setMinimumSize(null);
         urlField.setPreferredSize(null);
@@ -462,11 +466,13 @@ public class MainFrame extends javax.swing.JFrame implements ProgressListener, B
         setJMenuBar(menuBar);
 
         pack();
+        
+        urlFieldActionPerformed(null);
     }//GEN-END:initComponents
 
     private void preferencesMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preferencesMenuActionPerformed
         PrefsFrame pf = new PrefsFrame(parallelDisplay);
-        pf.show();
+        pf.setVisible(true);
     }//GEN-LAST:event_preferencesMenuActionPerformed
 
     private void saveBrushItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBrushItemActionPerformed
@@ -600,7 +606,7 @@ public class MainFrame extends javax.swing.JFrame implements ProgressListener, B
 
     private void urlFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_urlFieldActionPerformed
         try {
-            STFFile f = new STFFile(new URL(urlField.getText()));
+            STFFile f = new STFFile(urlField.getText());
             f.addProgressListener(this);
             
             f.readContents();
@@ -641,11 +647,9 @@ public class MainFrame extends javax.swing.JFrame implements ProgressListener, B
         if (option == JFileChooser.APPROVE_OPTION) {
             if (chooser.getSelectedFile() != null){
                 currentPath = chooser.getSelectedFile().getParentFile();
-                String urltext = "file:///" + chooser.getSelectedFile().getAbsolutePath();
-                urltext = urltext.replace('\\','/');
-                urlField.setText(urltext);
+                urlField.setText(chooser.getSelectedFile().getAbsolutePath());
                 try {
-                    STFFile f = new STFFile(new URL(urltext));
+                    STFFile f = new STFFile(chooser.getSelectedFile().getAbsolutePath());
                     f.readContents();
 
                     parallelDisplay.setModel(f);
@@ -669,7 +673,7 @@ public class MainFrame extends javax.swing.JFrame implements ProgressListener, B
     */
     public static void main(String args[]) {
         UIManager.put("org.mediavirus.parvis.gui.ParallelDisplayUI", "org.mediavirus.parvis.gui.BasicParallelDisplayUI");
-        new MainFrame().show();
+        new MainFrame().setVisible(true);
     }
 
     private long progressstart = 0;

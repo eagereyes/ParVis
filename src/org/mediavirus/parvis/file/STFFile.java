@@ -70,9 +70,6 @@ Ginger         48      100.00
  */
 public class STFFile extends SimpleParallelSpaceModel {
     
-    /** The url of the file. */
-    URL url;
-    
     private int tempNumDimensions;
     
     private int bytesRead = 0;
@@ -82,6 +79,8 @@ public class STFFile extends SimpleParallelSpaceModel {
     private boolean isStringLabel[];
     
     private String name = "";
+
+	private String fileName;
     
     /** 
      * Creates a new STFFile with the given url. The content is not read until
@@ -89,10 +88,9 @@ public class STFFile extends SimpleParallelSpaceModel {
      *
      * @param url The url of the file to read.
      */
-    public STFFile(URL url) {
-        this.url = url;
-        name = url.getFile();
-        name = name.substring(name.lastIndexOf('/') + 1);
+    public STFFile(String fname) {
+    	fileName = fname;
+        name = fname.substring(name.lastIndexOf('/') + 1);
     }
     
     /**
@@ -112,14 +110,12 @@ public class STFFile extends SimpleParallelSpaceModel {
     public void readContents() throws IOException{
         
         fireProgressEvent(new ProgressEvent(this, ProgressEvent.PROGRESS_START, 0.0f, "loading file"));
+
+        File f = new File(fileName);
+        filesize = (int) f.length();
+//        System.out.println("filesize: " + filesize);
         
-        URLConnection conn = url.openConnection();
-        conn.connect();
-        
-        filesize = conn.getContentLength();
-        System.out.println("filesize: " + filesize);
-        
-        InputStreamReader in = new InputStreamReader(conn.getInputStream());
+        InputStreamReader in = new InputStreamReader(new FileInputStream(f));
         
         readFirstLine(in);
         readHeaderLines(in);
@@ -338,7 +334,7 @@ public class STFFile extends SimpleParallelSpaceModel {
      */
     public static void main(String args[]){
         try {
-            STFFile f = new STFFile(new URL("file:///d:/uni/visualisierung/datasets/table1.stf"));
+            STFFile f = new STFFile("data/cars.stf");
         
             f.readContents();
         }
